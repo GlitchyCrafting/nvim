@@ -182,11 +182,11 @@ return {
 	{
 		"folke/trouble.nvim",
 		opts = {
-			auto_open = false,
+			auto_open = true,
 			auto_close = true,
 			auto_preview = true,
 			auto_refresh = true,
-			preview = {type = "float"},
+			preview = {type = "main"},
 		}
 	},
 	{
