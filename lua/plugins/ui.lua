@@ -162,21 +162,21 @@ return {
 			vim.o.timeoutlen = 0
 		end,
 		opts = {
-			window = {
+			preset = "classic",
+			win = {
 				border = "double",
-				position = "bottom",
+				title = false,
 			},
-			triggers = "auto",
+			triggers = {
+				{ "<auto>", mode = "nixsotc" },
+				{ "<leader>", mode = {"n", "v"} },
+			},
+			icons = { mappings = false },
+			show_help = false,
 		},
 		config = function (_, opts)
 			require("which-key").setup(opts)
-			require("which-key").register(
-				require("keybinds"),
-				{
-					mode = {"n", "v"},
-					prefix = "<Leader>",
-				}
-			)
+			require("which-key").add(require("keybinds"))
 		end
 	},
 	{
