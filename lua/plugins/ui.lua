@@ -63,7 +63,6 @@ return {
 					},
 				},
 				lualine_c = {
-					"overseer",
 					{
 						"lsp_progress",
 						display_components = {
@@ -129,7 +128,6 @@ return {
 				"lazy",
 				"mason",
 				"oil",
-				"overseer",
 				"trouble",
 			}
 		}
