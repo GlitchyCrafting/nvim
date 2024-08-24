@@ -180,11 +180,10 @@ return {
 	{
 		"folke/trouble.nvim",
 		opts = {
-			auto_open = true,
 			auto_close = true,
 			auto_preview = true,
 			auto_refresh = true,
-			preview = {type = "main"},
+			preview = { type = "main" },
 		}
 	},
 	{
