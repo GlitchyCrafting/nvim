@@ -23,6 +23,9 @@ local git_ignored = setmetatable({}, {
 	end,
 })
 
+local lua_map = require("utils.mapping").lua_map
+local cmd_map = require("utils.mapping").cmd_map
+
 return {
 	{
 		"ibhagwan/fzf-lua",
@@ -37,7 +40,15 @@ return {
 					scrollbar = false,
 				},
 			},
-		}
+		},
+		keys = {
+			lua_map("b", "fzf-lua", "buffers", "Buffers"),
+			lua_map("ff", "fzf-lua", "files", "Find"),
+			lua_map("h", "fzf-lua", "help_tags", "Help"),
+			lua_map("m", "fzf-lua", "manpages", "Man Pages"),
+			lua_map("s", "fzf-lua", "live_grep", "Search"),
+			lua_map("a", "fzf-lua", "lsp_code_actions", "Actions"),
+		},
 	},
 	{
 		"nvim-lualine/lualine.nvim",
@@ -118,8 +129,8 @@ return {
 			inactive_sections = {
 				lualine_a = {},
 				lualine_b = {},
-				lualine_c = {"filename"},
-				lualine_x = {"location"},
+				lualine_c = { "filename" },
+				lualine_x = { "location" },
 				lualine_y = {},
 				lualine_z = {}
 			},
@@ -136,22 +147,25 @@ return {
 		"uga-rosa/ccc.nvim",
 		config = function (_, _)
 			require("ccc").setup({
-			highlighter = {
-				auto_enable = true,
-				lsp = true,
-				update_insert = true,
-			},
-			win_opts = {border = "double"},
-			mappings = {
-				["<Left>"] = require("ccc").mapping.decrease,
-				["<Right>"] = require("ccc").mapping.increase,
-			},
-			pickers = {
-				require("ccc").picker.ansi_escape(),
-			},
-			recognize = {output = true},
-		})
-		end
+				highlighter = {
+					auto_enable = true,
+					lsp = true,
+					update_insert = true,
+				},
+				win_opts = { border = "double" },
+				mappings = {
+					["<Left>"] = require("ccc").mapping.decrease,
+					["<Right>"] = require("ccc").mapping.increase,
+				},
+				pickers = {
+					require("ccc").picker.ansi_escape(),
+				},
+				recognize = { output = true },
+			})
+		end,
+		keys = {
+			cmd_map("c", "CccPick", "Color"),
+		}
 	},
 	{
 		"folke/which-key.nvim",
@@ -167,15 +181,19 @@ return {
 			},
 			triggers = {
 				{ "<auto>", mode = "nixsotc" },
-				{ "<leader>", mode = {"n", "v"} },
+				{ "<leader>", mode = { "n", "v" } },
 			},
 			icons = { mappings = false },
 			show_help = false,
 		},
 		config = function (_, opts)
-			require("which-key").setup(opts)
-			require("which-key").add(require("keybinds"))
-		end
+			local wk = require("which-key")
+			wk.setup(opts)
+			wk.add({
+				mode = { "n" },
+				{ "<leader>f", group = "Files" },
+			})
+		end,
 	},
 	{
 		"folke/trouble.nvim",
@@ -184,6 +202,9 @@ return {
 			auto_preview = true,
 			auto_refresh = true,
 			preview = { type = "main" },
+		},
+		keys = {
+			cmd_map("d", "Trouble diagnostics", "Diagnostics"),
 		}
 	},
 	{
@@ -210,15 +231,21 @@ return {
 				padding = 10,
 				border = "double",
 			},
-			preview = {border = "double"},
-			progress = {border = "double"},
-			ssh = {border = "double"},
-			keymaps_help = {border = "double"},
+			preview = { border = "double" },
+			progress = { border = "double" },
+			ssh = { border = "double" },
+			keymaps_help = { border = "double" },
 		},
+		keys = {
+			lua_map("fb", "oil", "open", "Browser"),
+		}
 	},
 	{
 		"toppair/peek.nvim",
 		build = "deno task --quiet build:fast",
 		opts = {},
+		keys = {
+			lua_map("M", "peek", "toggle", "Markdown", "markdown")
+		}
 	},
 }

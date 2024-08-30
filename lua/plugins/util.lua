@@ -17,10 +17,10 @@ return {
 		opts = {
 			highlight = {
 				enable = true,
-				disable = {"html"},
-				additional_vim_regex_highlighting = {"html"},
+				disable = { "html" },
+				additional_vim_regex_highlighting = { "html" },
 			},
-			indent = {enable = false},
+			indent = { enable = false },
 			auto_install = true,
 		},
 		config = function (_, opts)

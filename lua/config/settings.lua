@@ -41,3 +41,57 @@ vim.opt.clipboard:append('unnamedplus')
 vim.opt.mouse        = ""
 vim.g.mapleader      = ' '
 vim.g.maplocalleader = ' '
+
+local TMPDIR = "./.tmp"
+
+return {
+	env = { TMPDIR = TMPDIR },
+	o = {
+		compatible = false,
+		backspace = "eol,indent,start",
+		ruler = true,
+		termguicolors = true,
+		timeoutlen = 0,
+		scrolloff = 5,
+		number = true,
+		numberwidth = 2,
+		relativenumber = true,
+		signcolumn = "yes",
+		cursorline = true,
+		expandtab = false,
+		smarttab = true,
+		cindent = true,
+		autoindent = true,
+		wrap = true,
+		textwidth = 80,
+		tabstop = 8,
+		shiftwidth = 0,
+		softtabstop = -1,
+		formatoptions = "rqn1jp",
+		backup = false,
+		writebackup = true,
+		undofile = true,
+		swapfile = false,
+		history = 50,
+		splitright = true,
+		splitbelow = true,
+		foldmethod = "expr",
+		foldexpr = "nvim_treesitter#foldexpr()",
+		foldlevelstart = 99,
+		foldnestmax = 3,
+		foldminlines = 1,
+		encoding = "utf-8",
+		showbreak = ">>=>> ",
+		virtualedit = "block",
+		incsearch = true,
+		directory = TMPDIR,
+	},
+	opt = {
+		clipboard = "unnamedplus,unnamed",
+		mouse = "",
+	},
+	g = {
+		mapleader = " ",
+		maplocalleader = " ",
+	},
+}

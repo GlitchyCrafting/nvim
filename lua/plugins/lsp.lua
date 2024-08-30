@@ -32,6 +32,7 @@ return {
 			servers = {
 				cssls = {},
 				marksman = {},
+				jdtls = {},
 				clangd = {
 					cmd = {
 						"clangd",
@@ -65,9 +66,9 @@ return {
 				},
 				html = {
 					filetypes = {"html", "hxml", "htmx", "tera", "hbs"},
-				}
-			}
-		}
+				},
+			},
+		},
 	},
 	{
 		"williamboman/mason.nvim",
@@ -75,22 +76,31 @@ return {
 			"williamboman/mason-lspconfig.nvim",
 		},
 		opts = {
-			ui = {border = "double"},
-		}
+			ui = { border = "double" },
+		},
 	},
 	{
 		"williamboman/mason-lspconfig.nvim",
 		dependencies = {
 			"neovim/nvim-lspconfig",
-		}
+		},
 	},
 	{
 		"ray-x/lsp_signature.nvim",
 		opts = {
+			bind = true,
 			handler_opts = { border = "double" },
-			hint_inline = function() return true end,
-			floating_window = false,
-			doc_lines = 0,
+			floating_window = true,
+			fix_pos = true,
+			hint_prefix = {
+				above = "↙ ",
+				current = "← ",
+				below = "↖ ",
+			},
+			auto_close_after = 5,
+		},
+		dependencies = {
+			"neovim/nvim-lspconfig",
 		},
 	},
 }

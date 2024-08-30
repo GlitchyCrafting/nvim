@@ -1,4 +1,4 @@
-vim.filetype.add({
+return {
 	extension = {
 		vert = "glsl",
 		frag = "glsl",
@@ -7,4 +7,4 @@ vim.filetype.add({
 		geom = "glsl",
 		comp = "glsl",
 	},
-})
+}

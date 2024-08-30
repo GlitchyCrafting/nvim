@@ -99,8 +99,8 @@ return {
 			local cmp = require("cmp")
 
 			cmp.setup({
-				enabled = {cmp_enabled},
-				performance = {max_view_entries = 10},
+				enabled = { cmp_enabled },
+				performance = { max_view_entries = 10 },
 				snippet = {
 					expand = function (args)
 						require('luasnip').lsp_expand(args.body)
@@ -108,42 +108,42 @@ return {
 				},
 				mapping = {
 					['<C-Space>'] = cmp.mapping(cmp.mapping.complete()),
-					['<C-e>'] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close(), }),
+					['<C-e>'] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
 					['<Tab>'] = cmp.mapping(cmp_next, {"i", "s"}),
 					['<S-Tab>'] = cmp.mapping(cmp_prev, {"i", "s"}),
 					['<S-CR>'] = cmp_confirm(),
 				},
 				sources = cmp.config.sources({
-					{name = "nvim_lua"},
-					{name = "luasnip"},
-					{name = "nvim_lsp"},
-					{name = "nvim_lsp_signature_help"},
-					{name = "nerdfont"},
-					{name = "emoji"},
-					{name = "async_path"}
+					{ name = "nvim_lua" },
+					{ name = "luasnip" },
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "nerdfont" },
+					{ name = "emoji" },
+					{ name = "async_path" },
 				}, {
-					{name = "buffer"}
+					{ name = "buffer" },
 				}),
 				formatting = {
 					format = require("lspkind").cmp_format("symbol_text"),
 					expandable_indicator = true,
 				},
 				view = {
-					docs = {auto_open = true},
+					docs = { auto_open = true },
 					entries = {
 						name = "custom",
 						selection_order = "near_cursor"
 					},
 				},
 				window = {
-					completion = {border = "double"},
-					documentation = {border = "double"},
+					completion = { border = "double" },
+					documentation = { border = "double" },
 				},
 			})
 
 			for _, t in pairs({
-				{{'/', '?'}, {sources = {{name = "buffer"}}}},
-				{{':'}, {
+				{{ '/', '?' }, { sources = {{ name = "buffer" }} }},
+				{{ ':' }, {
 					sources = cmp.config.sources({
 						{name = "async_path"}
 					}, {
@@ -159,22 +159,22 @@ return {
 
 			for _, t in pairs({
 				{
-					{"css", "yaml", "toml", "conf"},
+					{ "css", "yaml", "toml", "conf" },
 					{sources = {
-						{name = "luasnip"},
-						{name = "nvim_lsp"},
-						{name = "nvim_lsp_signature_help"},
-						{name = "async_path"},
-						{name = "fonts", option = {space_filter = "-"}},
+						{ name = "luasnip" },
+						{ name = "nvim_lsp" },
+						{ name = "nvim_lsp_signature_help" },
+						{ name = "async_path" },
+						{ name = "fonts", option = { space_filter = "-" } },
 					}}
 				},
 				{
-					{"markdown", "text"},
+					{ "markdown", "text" },
 					{sources = {
-						{name = "nerdfont"},
-						{name = "emoji"},
-						{name = "async_path"},
-						{name = "spell"},
+						{ name = "nerdfont" },
+						{ name = "emoji" },
+						{ name = "async_path" },
+						{ name = "spell" },
 					}}
 				},
 			}) do
