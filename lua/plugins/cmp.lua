@@ -55,10 +55,10 @@ local function cmp_confirm()
 				fallback()
 			end
 		end,
-		s = require("cmp").mapping.confirm({select = true}),
+		s = require("cmp").mapping.confirm({ select = true }),
 		c = require("cmp").mapping.confirm({
 			behavior = require("cmp").ConfirmBehavior.Replace,
-			select = true
+			select = true,
 		})
 	}
 end
@@ -100,7 +100,7 @@ return {
 
 			cmp.setup({
 				enabled = { cmp_enabled },
-				performance = { max_view_entries = 10 },
+				performance = { max_view_entries = 15 },
 				snippet = {
 					expand = function (args)
 						require('luasnip').lsp_expand(args.body)

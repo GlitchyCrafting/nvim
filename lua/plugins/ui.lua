@@ -204,7 +204,7 @@ return {
 			preview = { type = "main" },
 		},
 		keys = {
-			cmd_map("d", "Trouble diagnostics", "Diagnostics"),
+			cmd_map("d", "Trouble diagnostics toggle", "Diagnostics"),
 		}
 	},
 	{

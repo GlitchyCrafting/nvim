@@ -1,4 +1,4 @@
-vim.env.TMPDIR="./.tmp"
+-- vim.env.TMPDIR="~/.tmp"
 vim.o.compatible     = false
 vim.o.backspace      = 'eol,indent,start'
 vim.o.ruler          = true
@@ -42,10 +42,10 @@ vim.opt.mouse        = ""
 vim.g.mapleader      = ' '
 vim.g.maplocalleader = ' '
 
-local TMPDIR = "./.tmp"
+-- local TMPDIR = "~/.tmp"
 
 return {
-	env = { TMPDIR = TMPDIR },
+	-- env = { TMPDIR = TMPDIR },
 	o = {
 		compatible = false,
 		backspace = "eol,indent,start",
@@ -84,7 +84,7 @@ return {
 		showbreak = ">>=>> ",
 		virtualedit = "block",
 		incsearch = true,
-		directory = TMPDIR,
+		-- directory = TMPDIR,
 	},
 	opt = {
 		clipboard = "unnamedplus,unnamed",

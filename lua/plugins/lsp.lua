@@ -33,6 +33,10 @@ return {
 				cssls = {},
 				marksman = {},
 				jdtls = {},
+				lua_ls = {},
+				omnisharp = {
+					cmd = { "omnisharp" }
+				},
 				clangd = {
 					cmd = {
 						"clangd",
@@ -48,24 +52,15 @@ return {
 						"-j=8",
 						"--malloc-trim",
 					},
-					filetypes = {"c", "h", "cpp", "hpp"},
+					filetypes = { "c", "h", "cpp", "hpp" },
 					root_dir = require("lspconfig").util.root_pattern(".git", "compile_commands.json", "compile_flags.json")
 				},
-				lua_ls = {
-					settings = {
-						Lua = {
-							runtime = {
-								version = {"Lua 5.1"},
-							},
-						},
-					},
-				},
 				glsl_analyzer = {
-					cmd = {"glsl_analyzer"},
-					filetypes = {"glsl"},
+					cmd = { "glsl_analyzer" },
+					filetypes = { "glsl" },
 				},
 				html = {
-					filetypes = {"html", "hxml", "htmx", "tera", "hbs"},
+					filetypes = { "html", "hxml", "htmx", "tera", "hbs" },
 				},
 			},
 		},
