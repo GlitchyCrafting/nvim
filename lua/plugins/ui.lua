@@ -34,9 +34,9 @@ return {
 		},
 		opts = {
 			winopts = {
-				border = "double",
+				border = "none",
 				preview = {
-					border = "double",
+					border = "none",
 					scrollbar = false,
 				},
 			},
@@ -44,10 +44,11 @@ return {
 		keys = {
 			lua_map("b", "fzf-lua", "buffers", "Buffers"),
 			lua_map("ff", "fzf-lua", "files", "Find"),
-			lua_map("h", "fzf-lua", "help_tags", "Help"),
-			lua_map("m", "fzf-lua", "manpages", "Man Pages"),
+			lua_map("h", "fzf-lua", "help_tags", "Help", { "lua", "vim" }),
+			lua_map("m", "fzf-lua", "manpages", "Man Pages", { "c", "h", "cpp", "makefile" }),
 			lua_map("s", "fzf-lua", "live_grep", "Search"),
 			lua_map("a", "fzf-lua", "lsp_code_actions", "Actions"),
+			lua_map("fl", "fzf-lua", "lsp_document_symbols", "LSP"),
 		},
 	},
 	{
@@ -66,14 +67,28 @@ return {
 					"mode"
 				},
 				lualine_b = {
-					"branch",
-					"diff",
+					{
+						"filename",
+						file_status = true,
+						newfile_status = false,
+						path = 1,
+					},
+					-- "filesize",
+				},
+				lualine_c = {
+					-- "branch",
+					-- "diff",
+				},
+				lualine_x = {
+					-- "encoding",
+					-- "fileformat",
+					-- "filetype",
 					{
 						"diagnostics",
 						update_in_insert = true,
 					},
 				},
-				lualine_c = {
+				lualine_y = {
 					{
 						"lsp_progress",
 						display_components = {
@@ -91,7 +106,7 @@ return {
 								pre = "(",
 								post = ")",
 								commenced = "In Progress",
-								completed = "Comgleted",
+								completed = "Completed",
 							},
 							percentage = {
 								pre = "",
@@ -111,15 +126,6 @@ return {
 							},
 						},
 					},
-				},
-				lualine_x = {
-					"encoding",
-					"fileformat",
-					"filetype",
-				},
-				lualine_y = {
-					"filename",
-					"filesize",
 				},
 				lualine_z = {
 					"progress",
@@ -143,30 +149,30 @@ return {
 			}
 		}
 	},
-	{
-		"uga-rosa/ccc.nvim",
-		config = function (_, _)
-			require("ccc").setup({
-				highlighter = {
-					auto_enable = true,
-					lsp = true,
-					update_insert = true,
-				},
-				win_opts = { border = "double" },
-				mappings = {
-					["<Left>"] = require("ccc").mapping.decrease,
-					["<Right>"] = require("ccc").mapping.increase,
-				},
-				pickers = {
-					require("ccc").picker.ansi_escape(),
-				},
-				recognize = { output = true },
-			})
-		end,
-		keys = {
-			cmd_map("c", "CccPick", "Color"),
-		}
-	},
+	-- {
+	-- 	"uga-rosa/ccc.nvim",
+	-- 	config = function (_, _)
+	-- 		require("ccc").setup({
+	-- 			highlighter = {
+	-- 				auto_enable = true,
+	-- 				lsp = true,
+	-- 				update_insert = true,
+	-- 			},
+	-- 			win_opts = { border = "none" },
+	-- 			mappings = {
+	-- 				["<Left>"] = require("ccc").mapping.decrease,
+	-- 				["<Right>"] = require("ccc").mapping.increase,
+	-- 			},
+	-- 			pickers = {
+	-- 				require("ccc").picker.ansi_escape(),
+	-- 			},
+	-- 			recognize = { output = true },
+	-- 		})
+	-- 	end,
+	-- 	keys = {
+	-- 		cmd_map("c", "CccPick", "Color"),
+	-- 	}
+	-- },
 	{
 		"folke/which-key.nvim",
 		init = function ()
@@ -176,8 +182,8 @@ return {
 		opts = {
 			preset = "classic",
 			win = {
-				border = "double",
-				title = false,
+				border = "none",
+				title = true,
 			},
 			triggers = {
 				{ "<auto>", mode = "nixsotc" },
@@ -192,6 +198,9 @@ return {
 			wk.add({
 				mode = { "n" },
 				{ "<leader>f", group = "Files" },
+				{ "<leader>D", group = "Debug" },
+				{ "<leader>t", group = "Terminal" },
+				{ "<leader>T", group = "TODO" },
 			})
 		end,
 	},
@@ -229,23 +238,63 @@ return {
 			},
 			float = {
 				padding = 10,
-				border = "double",
+				border = "none",
 			},
-			preview = { border = "double" },
-			progress = { border = "double" },
-			ssh = { border = "double" },
-			keymaps_help = { border = "double" },
+			preview = { border = "none" },
+			progress = { border = "none" },
+			ssh = { border = "none" },
+			keymaps_help = { border = "none" },
 		},
 		keys = {
-			lua_map("fb", "oil", "open", "Browser"),
+			lua_map("fb", "oil", "toggle_float", "Browser"),
 		}
 	},
 	{
-		"toppair/peek.nvim",
-		build = "deno task --quiet build:fast",
-		opts = {},
+		"numToStr/FTerm.nvim",
+		opts = {
+			cmd = "fish",
+		},
 		keys = {
-			lua_map("M", "peek", "toggle", "Markdown", "markdown")
-		}
+			lua_map("tt", "FTerm", "toggle", "Toggle"),
+			{
+				"<Leader>tb",
+				function ()
+					require("FTerm").scratch({ cmd = "make build-release" })
+				end,
+				desc = "Build",
+				ft = { "c", "h", "cpp", "makefile" }
+			},
+			{
+				"<Leader>tr",
+				function ()
+					require("FTerm").scratch({ cmd = "make run" })
+				end,
+				desc = "Run",
+				ft = { "c", "h", "cpp", "makefile" }
+			},
+			{
+				"<Leader>td",
+				function ()
+					require("FTerm").scratch({ cmd = "make build-debug"})
+				end,
+				desc = "Build Debug",
+				ft = { "c", "h", "cpp", "makefile" }
+			},
+			{
+				"<Leader>tc",
+				function ()
+					require("FTerm").scratch({ cmd = "make clean"})
+				end,
+				desc = "Clean",
+				ft = { "c", "h", "cpp", "makefile" }
+			},
+			{
+				"<Leader>tg",
+				function ()
+					require("FTerm").scratch({ cmd = "lazygit"})
+				end,
+				desc = "LazyGit",
+			},
+		},
 	},
 }

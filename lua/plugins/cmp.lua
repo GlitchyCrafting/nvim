@@ -1,22 +1,12 @@
+
 local function has_words_before()
 	local unpack = unpack or table.unpack
 	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
 	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line-1, line, true)[1]:sub(col, col):match('%s') == nil
 end
 
-local function cmp_enabled()
-	local context = require('cmp.config.context')
-
-	if vim.api.nvim_get_mode().mode == 'c' then
-		return true
-	else
-		return not context.in_treesitter_capture('comment')
-		and not context.in_syntax_group('Comment')
-	end
-end
-
 local function cmp_next(fallback)
-	local cmp = require('cmp')
+	local cmp = require("cmp")
 	local luasnip = require('luasnip')
 
 	if cmp.visible() then
@@ -31,7 +21,7 @@ local function cmp_next(fallback)
 end
 
 local function cmp_prev(fallback)
-	local cmp = require('cmp')
+	local cmp = require("cmp")
 	local luasnip = require('luasnip')
 
 	if cmp.visible() then
@@ -43,26 +33,6 @@ local function cmp_prev(fallback)
 	end
 end
 
-local function cmp_confirm()
-	return {
-		i = function(fallback)
-			if require("cmp").visible and require("cmp").get_active_entry() then
-				require("cmp").confirm({
-					behavior = require("cmp").ConfirmBehavior.Replace,
-					select = false,
-				})
-			else
-				fallback()
-			end
-		end,
-		s = require("cmp").mapping.confirm({ select = true }),
-		c = require("cmp").mapping.confirm({
-			behavior = require("cmp").ConfirmBehavior.Replace,
-			select = true,
-		})
-	}
-end
-
 return {
 	{
 		"L3MON4D3/LuaSnip",
@@ -70,48 +40,44 @@ return {
 		build = "make install_jsregexp",
 	},
 	{
-		"saadparwaiz1/cmp_luasnip",
-		dependencies = {
-			"L3MON4D3/LuaSnip",
-		},
-	},
-	{
-		"hrsh7th/cmp-nvim-lsp",
-		dependencies = {
-			"nvim/nvim-lspconfig",
-		}
-	},
-	{
 		"hrsh7th/nvim-cmp",
 		dependencies = {
+			"L3MON4D3/LuaSnip",
 			"saadparwaiz1/cmp_luasnip",
 			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-cmdline",
 			"onsails/lspkind.nvim",
 			"FelipeLema/cmp-async-path",
-			"chrisgrieser/cmp-nerdfont",
-			"hrsh7th/cmp-emoji",
 			"amarakon/nvim-cmp-fonts",
 			"f3fora/cmp-spell",
 			"windwp/nvim-autopairs",
+			"rcarriga/cmp-dap",
 		},
-		config = function (_, opts)
+		config = function (_, _)
 			local cmp = require("cmp")
-
 			cmp.setup({
-				enabled = { cmp_enabled },
-				performance = { max_view_entries = 15 },
+				enabled = function ()
+					local disabled = false
+
+					disabled = disabled or (vim.api.nvim_get_option_value('buftype', { buf = 0 }) == 'prompt')
+					disabled = disabled or (vim.fn.reg_recording() ~= '')
+					disabled = disabled or (vim.fn.reg_executing() ~= '')
+					disabled = disabled or require('cmp.config.context').in_treesitter_capture('comment')
+
+					return true
+				end,
 				snippet = {
 					expand = function (args)
 						require('luasnip').lsp_expand(args.body)
 					end,
 				},
 				mapping = {
-					['<C-Space>'] = cmp.mapping(cmp.mapping.complete()),
-					['<C-e>'] = cmp.mapping({ i = cmp.mapping.abort(), c = cmp.mapping.close() }),
+					['<C-e>'] = cmp.mapping.abort(),
 					['<Tab>'] = cmp.mapping(cmp_next, {"i", "s"}),
 					['<S-Tab>'] = cmp.mapping(cmp_prev, {"i", "s"}),
-					['<S-CR>'] = cmp_confirm(),
+					['<S-CR>'] = cmp.mapping.confirm({ select = true }),
+					['<C-Tab>'] = cmp.mapping.scroll_docs(-4),
+					['<C-S-Tab>'] = cmp.mapping.scroll_docs(4),
 				},
 				sources = cmp.config.sources({
 					{ name = "nvim_lua" },
@@ -119,76 +85,101 @@ return {
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "nerdfont" },
-					{ name = "emoji" },
 					{ name = "async_path" },
 				}, {
 					{ name = "buffer" },
 				}),
 				formatting = {
-					format = require("lspkind").cmp_format("symbol_text"),
+					fields = { 'abbr', 'icon', 'kind', 'menu' },
+					format = require("lspkind").cmp_format({
+						mode = "symbol_text",
+						maxwidth = {
+							menu = 40,
+							abbr = 40,
+						},
+						ellipsis_char = '...',
+						show_labelDetails = true,
+					}),
 					expandable_indicator = true,
 				},
 				view = {
-					docs = { auto_open = true },
+					docs = { auto_open = false },
 					entries = {
 						name = "custom",
 						selection_order = "near_cursor"
 					},
 				},
 				window = {
-					completion = { border = "double" },
-					documentation = { border = "double" },
+					completion = {
+						border = "none",
+						max_height = 20,
+					},
+					documentation = {
+						border = "none",
+						max_width = 40,
+						max_height = 20,
+					},
 				},
 			})
 
-			for _, t in pairs({
-				{{ '/', '?' }, { sources = {{ name = "buffer" }} }},
-				{{ ':' }, {
-					sources = cmp.config.sources({
-						{name = "async_path"}
-					}, {
-						{name = "cmdline"}
-					})
-				}},
-			}) do
-				local cmd_opts = {
-					mapping = cmp.mapping.preset.cmdline(),
-				}
-				cmp.setup.cmdline(t[1], vim.tbl_deep_extend("force", cmd_opts, t[2]))
-			end
+			cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
 
-			for _, t in pairs({
+			cmp.setup.cmdline({ '/', '?' }, {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = {
+					{ name = "buffer" },
+				}
+			})
+
+			cmp.setup.cmdline(':', {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = cmp.config.sources({
+					{ name = 'async_path' },
+				}, {
+					{ name = 'cmdline' },
+				}),
+				matching = { disallow_symbol_nonprefix_matching = false, }
+			})
+
+			cmp.setup.filetype({
+				"markdown",
+				"text",
+			}, {
 				{
-					{ "css", "yaml", "toml", "conf" },
-					{sources = {
-						{ name = "luasnip" },
-						{ name = "nvim_lsp" },
-						{ name = "nvim_lsp_signature_help" },
-						{ name = "async_path" },
-						{ name = "fonts", option = { space_filter = "-" } },
-					}}
-				},
-				{
-					{ "markdown", "text" },
-					{sources = {
-						{ name = "nerdfont" },
-						{ name = "emoji" },
+					sources = {
 						{ name = "async_path" },
 						{ name = "spell" },
-					}}
+						{ name = "buffer" },
+					},
 				},
-			}) do
-				cmp.setup.filetype(t[1], t[2])
-			end
+			})
 
-			for e, a in pairs({
-				{
-					"confirm_done",
-					require("nvim-autopairs.completion.cmp").on_confirm_done()
-				},
-			}) do
-				cmp.event:on(e, a)
-			end
+			cmp.setup.filetype({
+				"css",
+				"yaml",
+				"toml",
+				"conf",
+			}, {
+				sources = {
+					{ name = "luasnip" },
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lsp_signature_help" },
+					{ name = "async_path" },
+					{ name = "fonts", option = { space_filter = "-" } },
+					{ name = "buffer" },
+				}
+			})
+
+			cmp.setup.filetype({
+				"dap-repl",
+				"dapui_watches",
+				"dapui_hover",
+			}, {
+				sources = {
+					{ name = "dap" },
+				}
+			})
+
 		end,
 	},
 }

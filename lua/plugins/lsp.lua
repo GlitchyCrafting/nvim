@@ -1,5 +1,5 @@
 local function lsp_setup(_, opts)
-	local lspconfig = require("lspconfig")
+	local lspconfig = vim.lsp.config
 
 	vim.diagnostic.config(opts.vim_diagnostic)
 
@@ -13,7 +13,8 @@ local function lsp_setup(_, opts)
 			end,
 			capabilities = capabilities
 		}
-		lspconfig[lsp].setup(vim.tbl_deep_extend("force", default_conf, o))
+		lspconfig(lsp, vim.tbl_deep_extend("force", default_conf, o))
+		vim.lsp.enable(lsp)
 	end
 end
 
@@ -32,11 +33,11 @@ return {
 			servers = {
 				cssls = {},
 				marksman = {},
-				jdtls = {},
 				lua_ls = {},
-				omnisharp = {
-					cmd = { "omnisharp" }
-				},
+				cmake = {},
+				rust_analyzer = {},
+				pyright = {},
+				-- glsl_analyzer = {},
 				clangd = {
 					cmd = {
 						"clangd",
@@ -51,13 +52,10 @@ return {
 						"--header-insertion-decorators",
 						"-j=8",
 						"--malloc-trim",
+						"--enable-config",
 					},
 					filetypes = { "c", "h", "cpp", "hpp" },
-					root_dir = require("lspconfig").util.root_pattern(".git", "compile_commands.json", "compile_flags.json")
-				},
-				glsl_analyzer = {
-					cmd = { "glsl_analyzer" },
-					filetypes = { "glsl" },
+					root_markers = {".git", "compile_commands.json", "compile_flags.json"},
 				},
 				html = {
 					filetypes = { "html", "hxml", "htmx", "tera", "hbs" },
@@ -69,33 +67,28 @@ return {
 		"williamboman/mason.nvim",
 		dependencies = {
 			"williamboman/mason-lspconfig.nvim",
-		},
-		opts = {
-			ui = { border = "double" },
-		},
-	},
-	{
-		"williamboman/mason-lspconfig.nvim",
-		dependencies = {
 			"neovim/nvim-lspconfig",
 		},
-	},
-	{
-		"ray-x/lsp_signature.nvim",
 		opts = {
-			bind = true,
-			handler_opts = { border = "double" },
-			floating_window = true,
-			fix_pos = true,
-			hint_prefix = {
-				above = "↙ ",
-				current = "← ",
-				below = "↖ ",
-			},
-			auto_close_after = 5,
-		},
-		dependencies = {
-			"neovim/nvim-lspconfig",
+			ui = { border = "none" },
 		},
 	},
+	-- {
+	-- 	"ray-x/lsp_signature.nvim",
+	-- 	opts = {
+	-- 		bind = true,
+	-- 		handler_opts = { border = "none" },
+	-- 		floating_window = true,
+	-- 		fix_pos = true,
+	-- 		hint_prefix = {
+	-- 			above = "↙ ",
+	-- 			current = "← ",
+	-- 			below = "↖ ",
+	-- 		},
+	-- 		auto_close_after = nil,
+	-- 	},
+	-- 	dependencies = {
+	-- 		"neovim/nvim-lspconfig",
+	-- 	},
+	-- },
 }
